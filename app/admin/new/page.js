@@ -83,8 +83,11 @@ function NewJobPageContent() {
     <main className="min-h-screen bg-neutral-100 p-4 text-neutral-950 md:p-8">
       <div className="mx-auto max-w-4xl space-y-5">
         <header className="rounded-3xl bg-white p-6 shadow-sm">
+          <a href="/admin" className="text-sm font-bold text-neutral-500 hover:text-black">
+            ← Back to admin
+          </a>
           <p className="text-sm font-semibold uppercase tracking-wide text-neutral-500">
-            Admin dashboard
+            Private admin dashboard
           </p>
           <h1 className="mt-2 text-4xl font-bold">Create New Transport</h1>
           <p className="mt-2 text-neutral-600">
