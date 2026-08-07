@@ -44,7 +44,32 @@ function AdminPageContent() {
   }
 
   useEffect(() => {
-    loadJob();
+    let cancelled = false;
+
+    async function loadInitialJob() {
+      const initialQuery = query(
+        collection(db, "Jobs"),
+        where("jobId", "==", "SP-2408"),
+        limit(1)
+      );
+      const snapshot = await getDocs(initialQuery);
+
+      if (cancelled) return;
+
+      if (!snapshot.empty) {
+        const foundDoc = snapshot.docs[0];
+        setDocId(foundDoc.id);
+        setJob(foundDoc.data());
+        setMessage("Job loaded.");
+      } else {
+        setMessage("Enter a tracking number to load a job.");
+      }
+    }
+
+    loadInitialJob();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   async function saveJob(updatedFields) {
@@ -107,13 +132,23 @@ function AdminPageContent() {
     <main className="min-h-screen bg-neutral-100 p-4 text-neutral-950 md:p-8">
       <div className="mx-auto max-w-5xl space-y-5">
         <header className="rounded-3xl bg-white p-6 shadow-sm">
-          <p className="text-sm font-semibold uppercase tracking-wide text-neutral-500">
-            Admin dashboard
-          </p>
-          <h1 className="mt-2 text-4xl font-bold">S&P LiveTrack</h1>
-          <p className="mt-2 text-neutral-600">
-            Update your customer tracking page from here.
-          </p>
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-neutral-500">
+                Private admin dashboard
+              </p>
+              <h1 className="mt-2 text-4xl font-bold">S&P LiveTrack</h1>
+              <p className="mt-2 text-neutral-600">
+                Create transports and update customer tracking pages.
+              </p>
+            </div>
+            <a
+              href="/admin/new"
+              className="shrink-0 rounded-2xl bg-[#f2a01e] px-5 py-3 text-center font-bold text-black"
+            >
+              + Create New Job
+            </a>
+          </div>
         </header>
 
         <section className="rounded-3xl bg-white p-6 shadow-sm">

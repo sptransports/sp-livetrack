@@ -49,14 +49,37 @@ function DriverPageContent() {
   }
 
   useEffect(() => {
-    loadJob();
+    let cancelled = false;
+
+    async function loadInitialJob() {
+      const initialQuery = query(
+        collection(db, "Jobs"),
+        where("jobId", "==", jobId),
+        limit(1)
+      );
+      const snapshot = await getDocs(initialQuery);
+
+      if (cancelled) return;
+
+      if (!snapshot.empty) {
+        const foundDoc = snapshot.docs[0];
+        setDocId(foundDoc.id);
+        setJob(foundDoc.data());
+        setMessage("Job loaded.");
+      } else {
+        setMessage("No job found.");
+      }
+    }
+
+    loadInitialJob();
 
     return () => {
+      cancelled = true;
       if (watchIdRef.current) {
         navigator.geolocation.clearWatch(watchIdRef.current);
       }
     };
-  }, []);
+  }, [jobId]);
 
   async function saveUpdate(fields) {
     if (!docId) {
