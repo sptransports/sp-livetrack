@@ -73,21 +73,6 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="mt-8 flex flex-wrap gap-3">
-            <a
-              href="/admin"
-              className="rounded-2xl border px-5 py-3 font-bold"
-            >
-              Admin Dashboard
-            </a>
-
-            <a
-              href="/admin/new"
-              className="rounded-2xl border px-5 py-3 font-bold"
-            >
-              Create New Job
-            </a>
-          </div>
         </div>
       </div>
     </main>
