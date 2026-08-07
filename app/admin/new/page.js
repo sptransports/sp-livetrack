@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import AuthGate from "@/components/AuthGate";
 
 function makePrivateTrackingId(baseId) {
   const cleanedBase = baseId.trim().toUpperCase();
@@ -16,7 +17,7 @@ function makePrivateTrackingId(baseId) {
   return `${cleanedBase}-${suffix}`;
 }
 
-export default function NewJobPage() {
+function NewJobPageContent() {
   const [form, setForm] = useState({
     baseJobId: "",
     customerName: "",
@@ -259,5 +260,13 @@ export default function NewJobPage() {
         </form>
       </div>
     </main>
+  );
+}
+
+export default function NewJobPage() {
+  return (
+    <AuthGate>
+      <NewJobPageContent />
+    </AuthGate>
   );
 }
