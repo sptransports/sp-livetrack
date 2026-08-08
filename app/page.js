@@ -27,6 +27,7 @@ export default function HomePage() {
   const router = useRouter();
   const [trackingNumber, setTrackingNumber] = useState("");
   const [error, setError] = useState("");
+  const [openingTracker, setOpeningTracker] = useState(false);
 
   function trackTransport(event) {
     event.preventDefault();
@@ -38,6 +39,7 @@ export default function HomePage() {
     }
 
     setError("");
+    setOpeningTracker(true);
     router.push(`/track/${encodeURIComponent(cleaned)}`);
   }
 
@@ -120,9 +122,10 @@ export default function HomePage() {
                   />
                   <button
                     type="submit"
-                    className="mt-2 w-full rounded-xl bg-[#8fa7b8] px-6 py-3.5 font-black text-[#10161a] transition hover:bg-[#a9bdca] focus:outline-none focus:ring-4 focus:ring-[#8fa7b8]/30 sm:mt-0 sm:w-auto"
+                    disabled={openingTracker}
+                    className="mt-2 w-full rounded-xl bg-[#8fa7b8] px-6 py-3.5 font-black text-[#10161a] transition hover:bg-[#a9bdca] focus:outline-none focus:ring-4 focus:ring-[#8fa7b8]/30 disabled:cursor-wait disabled:opacity-70 sm:mt-0 sm:w-auto"
                   >
-                    Track now →
+                    {openingTracker ? "Opening…" : "Track now →"}
                   </button>
                 </div>
                 {error ? (

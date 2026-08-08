@@ -19,6 +19,7 @@ function AdminPageContent() {
   const [docId, setDocId] = useState(null);
   const [job, setJob] = useState(null);
   const [message, setMessage] = useState("");
+  const [savingAction, setSavingAction] = useState("");
 
   async function loadJob() {
     setMessage("Loading job...");
@@ -72,22 +73,39 @@ function AdminPageContent() {
     };
   }, []);
 
-  async function saveJob(updatedFields) {
+  async function saveJob(updatedFields, action = "Update") {
     if (!docId) {
       setMessage("Load a job first.");
       return;
     }
 
     const jobRef = doc(db, "Jobs", docId);
+    setSavingAction(action);
+    setMessage(`Saving ${action.toLowerCase()}...`);
 
-    await updateDoc(jobRef, updatedFields);
+    try {
+      await updateDoc(jobRef, updatedFields);
 
-    setJob((prev) => ({
-      ...prev,
-      ...updatedFields,
-    }));
+      setJob((prev) => ({
+        ...prev,
+        ...updatedFields,
+      }));
 
-    setMessage("Saved.");
+      setMessage(`${action} saved ✓`);
+    } catch (error) {
+      console.error(error);
+      setMessage(`Could not save ${action.toLowerCase()}. Please try again.`);
+    } finally {
+      setSavingAction("");
+    }
+  }
+
+  function quickControlClass(selected) {
+    return `rounded-2xl px-5 py-3 font-bold transition disabled:cursor-wait disabled:opacity-60 ${
+      selected
+        ? "bg-[#8fa7b8] text-[#10161a] shadow-md ring-4 ring-[#8fa7b8]/25"
+        : "border border-neutral-300 bg-white hover:border-[#8fa7b8] hover:bg-[#eef1f3]"
+    }`;
   }
 
   async function handleFieldChange(field, value) {
@@ -229,11 +247,12 @@ function AdminPageContent() {
                     vehicle: job.vehicle,
                     pickup: job.pickup,
                     dropoff: job.dropoff,
-                  })
+                  }, "Job details")
                 }
-                className="w-full rounded-2xl bg-black px-5 py-3 font-bold text-white"
+                disabled={Boolean(savingAction)}
+                className="w-full rounded-2xl bg-black px-5 py-3 font-bold text-white transition hover:bg-neutral-800 disabled:cursor-wait disabled:opacity-60"
               >
-                Save Job Details
+                {savingAction === "Job details" ? "Saving…" : "Save Job Details"}
               </button>
             </div>
           </div>
@@ -302,11 +321,12 @@ function AdminPageContent() {
                     currentLocation: job.currentLocation,
                     progress: Number(job.progress),
                     lastUpdated: "Just now",
-                  })
+                  }, "Live update")
                 }
-                className="w-full rounded-2xl bg-black px-5 py-3 font-bold text-white"
+                disabled={Boolean(savingAction)}
+                className="w-full rounded-2xl bg-black px-5 py-3 font-bold text-white transition hover:bg-neutral-800 disabled:cursor-wait disabled:opacity-60"
               >
-                Save Live Update
+                {savingAction === "Live update" ? "Saving…" : "Save Live Update"}
               </button>
             </div>
           </div>
@@ -322,11 +342,13 @@ function AdminPageContent() {
                   trackingPaused: true,
                   status: "Tracking Paused",
                   lastUpdated: "Just now",
-                })
+                }, "Pause tracking")
               }
-              className="rounded-2xl bg-black px-5 py-3 font-bold text-white"
+              aria-pressed={Boolean(job.trackingPaused)}
+              disabled={Boolean(savingAction)}
+              className={quickControlClass(Boolean(job.trackingPaused))}
             >
-              Pause Tracking
+              {savingAction === "Pause tracking" ? "Saving…" : job.trackingPaused ? "✓ Tracking Paused" : "Pause Tracking"}
             </button>
 
             <button
@@ -335,11 +357,13 @@ function AdminPageContent() {
                   trackingPaused: false,
                   status: "Live Tracking Active",
                   lastUpdated: "Just now",
-                })
+                }, "Resume tracking")
               }
-              className="rounded-2xl border px-5 py-3 font-bold"
+              aria-pressed={!job.trackingPaused && job.status === "Live Tracking Active"}
+              disabled={Boolean(savingAction)}
+              className={quickControlClass(!job.trackingPaused && job.status === "Live Tracking Active")}
             >
-              Resume Tracking
+              {savingAction === "Resume tracking" ? "Saving…" : !job.trackingPaused && job.status === "Live Tracking Active" ? "✓ Tracking Active" : "Resume Tracking"}
             </button>
 
             <button
@@ -349,11 +373,13 @@ function AdminPageContent() {
                   progress: 35,
                   trackingPaused: false,
                   lastUpdated: "Just now",
-                })
+                }, "Picked up status")
               }
-              className="rounded-2xl border px-5 py-3 font-bold"
+              aria-pressed={job.status === "Vehicle Picked Up"}
+              disabled={Boolean(savingAction)}
+              className={quickControlClass(job.status === "Vehicle Picked Up")}
             >
-              Mark Picked Up
+              {savingAction === "Picked up status" ? "Saving…" : job.status === "Vehicle Picked Up" ? "✓ Vehicle Picked Up" : "Mark Picked Up"}
             </button>
 
             <button
@@ -363,11 +389,13 @@ function AdminPageContent() {
                   progress: 62,
                   trackingPaused: false,
                   lastUpdated: "Just now",
-                })
+                }, "In transit status")
               }
-              className="rounded-2xl border px-5 py-3 font-bold"
+              aria-pressed={job.status === "In Transit"}
+              disabled={Boolean(savingAction)}
+              className={quickControlClass(job.status === "In Transit")}
             >
-              Mark In Transit
+              {savingAction === "In transit status" ? "Saving…" : job.status === "In Transit" ? "✓ In Transit" : "Mark In Transit"}
             </button>
 
             <button
@@ -377,11 +405,13 @@ function AdminPageContent() {
                   progress: 100,
                   trackingPaused: false,
                   lastUpdated: "Just now",
-                })
+                }, "Delivered status")
               }
-              className="rounded-2xl bg-black px-5 py-3 font-bold text-white"
+              aria-pressed={job.status === "Delivered"}
+              disabled={Boolean(savingAction)}
+              className={quickControlClass(job.status === "Delivered")}
             >
-              Mark Delivered
+              {savingAction === "Delivered status" ? "Saving…" : job.status === "Delivered" ? "✓ Delivered" : "Mark Delivered"}
             </button>
           </div>
         </section>

@@ -24,6 +24,7 @@ function DriverPageContent() {
   const [message, setMessage] = useState("Load the job to begin.");
   const [tracking, setTracking] = useState(false);
   const [lastCoords, setLastCoords] = useState(null);
+  const [savingAction, setSavingAction] = useState("");
 
   const watchIdRef = useRef(null);
 
@@ -81,18 +82,40 @@ function DriverPageContent() {
     };
   }, [jobId]);
 
-  async function saveUpdate(fields) {
+  async function saveUpdate(fields, action = "Update", showFeedback = true) {
     if (!docId) {
       setMessage("Load job first.");
       return;
     }
 
-    await updateDoc(doc(db, "Jobs", docId), fields);
+    if (showFeedback) {
+      setSavingAction(action);
+      setMessage(`Saving ${action.toLowerCase()}...`);
+    }
 
-    setJob((prev) => ({
-      ...prev,
-      ...fields,
-    }));
+    try {
+      await updateDoc(doc(db, "Jobs", docId), fields);
+
+      setJob((prev) => ({
+        ...prev,
+        ...fields,
+      }));
+
+      if (showFeedback) setMessage(`${action} saved ✓`);
+    } catch (error) {
+      console.error(error);
+      if (showFeedback) setMessage(`Could not save ${action.toLowerCase()}. Please try again.`);
+    } finally {
+      if (showFeedback) setSavingAction("");
+    }
+  }
+
+  function controlClass(selected) {
+    return `rounded-2xl px-5 py-4 font-bold transition disabled:cursor-wait disabled:opacity-60 ${
+      selected
+        ? "bg-[#8fa7b8] text-[#10161a] shadow-md ring-4 ring-[#8fa7b8]/25"
+        : "border border-neutral-300 bg-white hover:border-[#8fa7b8] hover:bg-[#eef1f3]"
+    }`;
   }
 
   function startTracking() {
@@ -118,7 +141,7 @@ function DriverPageContent() {
           longitude: lng,
           currentLocation: "Live GPS active — approximate location updating",
           lastUpdated: new Date().toLocaleTimeString(),
-        });
+        }, "Live GPS update", false);
 
         setTracking(true);
         setMessage("Live tracking is active.");
@@ -147,9 +170,7 @@ function DriverPageContent() {
       trackingActive: false,
       status: "Tracking Stopped",
       lastUpdated: new Date().toLocaleTimeString(),
-    });
-
-    setMessage("Live tracking stopped.");
+    }, "Stop tracking");
   }
 
   async function pauseTracking() {
@@ -157,9 +178,7 @@ function DriverPageContent() {
       trackingPaused: true,
       status: "Tracking Paused",
       lastUpdated: new Date().toLocaleTimeString(),
-    });
-
-    setMessage("Customer location updates paused.");
+    }, "Pause updates");
   }
 
   async function resumeTracking() {
@@ -167,9 +186,7 @@ function DriverPageContent() {
       trackingPaused: false,
       status: "Live Tracking Active",
       lastUpdated: new Date().toLocaleTimeString(),
-    });
-
-    setMessage("Customer location updates resumed.");
+    }, "Resume updates");
   }
 
   async function markPickedUp() {
@@ -178,9 +195,7 @@ function DriverPageContent() {
       progress: 35,
       trackingPaused: false,
       lastUpdated: new Date().toLocaleTimeString(),
-    });
-
-    setMessage("Marked picked up.");
+    }, "Picked up status");
   }
 
   async function markDelivered() {
@@ -190,7 +205,7 @@ function DriverPageContent() {
       trackingPaused: false,
       trackingActive: false,
       lastUpdated: new Date().toLocaleTimeString(),
-    });
+    }, "Delivered status");
 
     if (watchIdRef.current) {
       navigator.geolocation.clearWatch(watchIdRef.current);
@@ -198,7 +213,6 @@ function DriverPageContent() {
     }
 
     setTracking(false);
-    setMessage("Marked delivered and stopped tracking.");
   }
 
   return (
@@ -247,30 +261,38 @@ function DriverPageContent() {
           <div className="mt-4 grid gap-3">
             <button
               onClick={startTracking}
-              className="rounded-2xl bg-black px-5 py-4 font-bold text-white"
+              aria-pressed={tracking || Boolean(job?.trackingActive && !job?.trackingPaused)}
+              disabled={Boolean(savingAction)}
+              className={controlClass(tracking || Boolean(job?.trackingActive && !job?.trackingPaused))}
             >
-              Start Live Tracking
+              {tracking || Boolean(job?.trackingActive && !job?.trackingPaused) ? "✓ Live Tracking Active" : "Start Live Tracking"}
             </button>
 
             <button
               onClick={stopTracking}
-              className="rounded-2xl border px-5 py-4 font-bold"
+              aria-pressed={job?.status === "Tracking Stopped"}
+              disabled={Boolean(savingAction)}
+              className={controlClass(job?.status === "Tracking Stopped")}
             >
-              Stop Live Tracking
+              {savingAction === "Stop tracking" ? "Saving…" : job?.status === "Tracking Stopped" ? "✓ Tracking Stopped" : "Stop Live Tracking"}
             </button>
 
             <button
               onClick={pauseTracking}
-              className="rounded-2xl border px-5 py-4 font-bold"
+              aria-pressed={Boolean(job?.trackingPaused)}
+              disabled={Boolean(savingAction)}
+              className={controlClass(Boolean(job?.trackingPaused))}
             >
-              Pause Customer Updates
+              {savingAction === "Pause updates" ? "Saving…" : job?.trackingPaused ? "✓ Customer Updates Paused" : "Pause Customer Updates"}
             </button>
 
             <button
               onClick={resumeTracking}
-              className="rounded-2xl border px-5 py-4 font-bold"
+              aria-pressed={!job?.trackingPaused && job?.status === "Live Tracking Active"}
+              disabled={Boolean(savingAction)}
+              className={controlClass(!job?.trackingPaused && job?.status === "Live Tracking Active")}
             >
-              Resume Customer Updates
+              {savingAction === "Resume updates" ? "Saving…" : !job?.trackingPaused && job?.status === "Live Tracking Active" ? "✓ Customer Updates Active" : "Resume Customer Updates"}
             </button>
           </div>
         </section>
@@ -281,16 +303,20 @@ function DriverPageContent() {
           <div className="mt-4 grid gap-3">
             <button
               onClick={markPickedUp}
-              className="rounded-2xl border px-5 py-4 font-bold"
+              aria-pressed={job?.status === "Vehicle Picked Up"}
+              disabled={Boolean(savingAction)}
+              className={controlClass(job?.status === "Vehicle Picked Up")}
             >
-              Mark Picked Up
+              {savingAction === "Picked up status" ? "Saving…" : job?.status === "Vehicle Picked Up" ? "✓ Vehicle Picked Up" : "Mark Picked Up"}
             </button>
 
             <button
               onClick={markDelivered}
-              className="rounded-2xl bg-black px-5 py-4 font-bold text-white"
+              aria-pressed={job?.status === "Delivered"}
+              disabled={Boolean(savingAction)}
+              className={controlClass(job?.status === "Delivered")}
             >
-              Mark Delivered
+              {savingAction === "Delivered status" ? "Saving…" : job?.status === "Delivered" ? "✓ Delivered" : "Mark Delivered"}
             </button>
           </div>
         </section>

@@ -22,3 +22,19 @@ body {
   background: #8fa7b8;
   color: #10161a;
 }
+
+button:not(:disabled) {
+  transition: transform 120ms ease, filter 120ms ease, box-shadow 160ms ease,
+    background-color 160ms ease, border-color 160ms ease;
+}
+
+button:not(:disabled):active {
+  transform: scale(0.97);
+  filter: brightness(1.08);
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 3px solid #8fa7b8;
+  outline-offset: 3px;
+}

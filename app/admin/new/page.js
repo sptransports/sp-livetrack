@@ -35,6 +35,7 @@ function NewJobPageContent() {
 
   const [message, setMessage] = useState("");
   const [createdJobId, setCreatedJobId] = useState("");
+  const [creating, setCreating] = useState(false);
 
   function updateField(field, value) {
     setForm((prev) => ({
@@ -54,6 +55,8 @@ function NewJobPageContent() {
     const privateJobId = makePrivateTrackingId(form.baseJobId);
 
     try {
+      setCreating(true);
+      setMessage("Creating private tracking link...");
       await addDoc(collection(db, "Jobs"), {
         jobId: privateJobId,
         baseJobId: form.baseJobId.trim().toUpperCase(),
@@ -75,7 +78,9 @@ function NewJobPageContent() {
       setMessage("Job created successfully.");
     } catch (error) {
       console.error(error);
-      setMessage("Error creating job. Check the console.");
+      setMessage("Could not create the job. Please try again.");
+    } finally {
+      setCreating(false);
     }
   }
 
@@ -206,9 +211,10 @@ function NewJobPageContent() {
 
           <button
             type="submit"
-            className="mt-6 w-full rounded-2xl bg-black px-5 py-4 font-bold text-white"
+            disabled={creating}
+            className="mt-6 w-full rounded-2xl bg-black px-5 py-4 font-bold text-white transition hover:bg-neutral-800 disabled:cursor-wait disabled:opacity-60"
           >
-            Create Private Tracking Link
+            {creating ? "Creating…" : createdJobId ? "✓ Job Created" : "Create Private Tracking Link"}
           </button>
 
           {message && <p className="mt-4 text-sm font-semibold">{message}</p>}
