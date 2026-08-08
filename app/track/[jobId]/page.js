@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { collection, limit, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
@@ -26,7 +27,13 @@ function TrackerShell({ children }) {
       <header className="border-b border-black/10 bg-[#0b0d0e] text-white">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-5 sm:px-8">
           <Link href="/" className="flex items-center gap-3" aria-label="S&P LiveTrack home">
-            <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#8fa7b8] text-sm font-black text-[#10161a]">S&P</span>
+            <Image
+              src="/sp-transports-logo.png"
+              alt="S&P Transports"
+              className="h-12 w-20 object-contain"
+              width="80"
+              height="53"
+            />
             <span>
               <span className="block text-sm font-black uppercase tracking-[0.18em]">LiveTrack</span>
               <span className="block text-[10px] font-semibold uppercase tracking-[0.2em] text-white/45">Customer portal</span>

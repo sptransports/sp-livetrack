@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 
 const features = [
   {
@@ -47,9 +48,13 @@ export default function HomePage() {
       <div className="relative mx-auto flex min-h-screen max-w-7xl flex-col px-5 sm:px-8 lg:px-12">
         <header className="flex items-center justify-between border-b border-white/10 py-5">
           <Link href="/" className="flex items-center gap-3" aria-label="S&P LiveTrack home">
-            <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#8fa7b8] text-sm font-black text-[#10161a] shadow-[0_0_30px_rgba(143,167,184,0.22)]">
-              S&P
-            </span>
+            <Image
+              src="/sp-transports-logo.png"
+              alt="S&P Transports"
+              className="h-12 w-20 object-contain drop-shadow-[0_0_18px_rgba(143,167,184,0.2)]"
+              width="80"
+              height="53"
+            />
             <span>
               <span className="block text-sm font-black uppercase tracking-[0.18em]">LiveTrack</span>
               <span className="block text-[10px] font-semibold uppercase tracking-[0.22em] text-white/45">Vehicle transport</span>
