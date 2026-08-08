@@ -22,17 +22,17 @@ function clampProgress(value) {
 
 function TrackerShell({ children }) {
   return (
-    <main className="min-h-screen bg-[#f3f1ec] text-[#121516]">
+    <main className="min-h-screen bg-[#eef1f3] text-[#182127]">
       <header className="border-b border-black/10 bg-[#0b0d0e] text-white">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-5 sm:px-8">
           <Link href="/" className="flex items-center gap-3" aria-label="S&P LiveTrack home">
-            <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#f2a01e] text-sm font-black text-black">S&P</span>
+            <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#8fa7b8] text-sm font-black text-[#10161a]">S&P</span>
             <span>
               <span className="block text-sm font-black uppercase tracking-[0.18em]">LiveTrack</span>
               <span className="block text-[10px] font-semibold uppercase tracking-[0.2em] text-white/45">Customer portal</span>
             </span>
           </Link>
-          <a href="tel:+19292642629" className="rounded-full border border-white/15 px-4 py-2 text-sm font-bold hover:border-[#f2a01e] hover:text-[#f2a01e]">Call support</a>
+          <a href="tel:+19292642629" className="rounded-full border border-white/15 px-4 py-2 text-sm font-bold hover:border-[#8fa7b8] hover:text-[#b9ccd9]">Call support</a>
         </div>
       </header>
       {children}
@@ -73,7 +73,7 @@ export default function TrackingPage() {
     return (
       <TrackerShell>
         <div className="mx-auto max-w-3xl px-5 py-20 text-center">
-          <span className="mx-auto block h-10 w-10 animate-spin rounded-full border-4 border-black/10 border-t-[#f2a01e]" />
+          <span className="mx-auto block h-10 w-10 animate-spin rounded-full border-4 border-black/10 border-t-[#8fa7b8]" />
           <h1 className="mt-6 text-2xl font-black">Loading your transport</h1>
           <p className="mt-2 text-black/55">Connecting to the latest trip update…</p>
         </div>
@@ -86,7 +86,7 @@ export default function TrackingPage() {
       <TrackerShell>
         <div className="mx-auto max-w-xl px-5 py-16 sm:py-24">
           <div className="rounded-[2rem] border border-black/10 bg-white p-7 text-center shadow-[0_20px_60px_rgba(0,0,0,0.08)] sm:p-10">
-            <span className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-[#f2a01e]/15 text-2xl">⌕</span>
+            <span className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-[#8fa7b8]/15 text-2xl">⌕</span>
             <h1 className="mt-6 text-3xl font-black tracking-tight">{loadError ? "Tracking is temporarily unavailable" : "Tracking number not found"}</h1>
             <p className="mt-3 leading-7 text-black/55">
               {loadError ? "We could not load the latest update. Please try again in a moment." : "Double-check the private tracking number in your confirmation message and try again."}
@@ -121,21 +121,21 @@ export default function TrackingPage() {
             <div className="p-6 sm:p-9">
               <div className="flex items-center justify-between gap-4">
                 <div>
-                  <p className="text-xs font-black uppercase tracking-[0.18em] text-[#f2a01e]">Trip progress</p>
+                  <p className="text-xs font-black uppercase tracking-[0.18em] text-[#9fb5c5]">Trip progress</p>
                   <p className="mt-2 text-3xl font-black">{progress}% complete</p>
                 </div>
                 <p className="text-right text-xs leading-5 text-white/45">Last updated<br/><span className="font-bold text-white/75">{job.lastUpdated || "Pending"}</span></p>
               </div>
 
               <div className="mt-8 h-2 overflow-hidden rounded-full bg-white/10">
-                <div className="h-full rounded-full bg-[#f2a01e] transition-[width] duration-700" style={{ width: `${progress}%` }} />
+                <div className="h-full rounded-full bg-[#8fa7b8] transition-[width] duration-700" style={{ width: `${progress}%` }} />
               </div>
               <div className="mt-5 grid grid-cols-5 gap-1">
                 {milestones.map((milestone) => {
                   const reached = progress >= milestone.threshold;
                   return (
                     <div key={milestone.label} className="text-center">
-                      <span className={`mx-auto grid h-6 w-6 place-items-center rounded-full border text-[10px] font-black ${reached ? "border-[#f2a01e] bg-[#f2a01e] text-black" : "border-white/20 text-white/30"}`}>{reached ? "✓" : ""}</span>
+                      <span className={`mx-auto grid h-6 w-6 place-items-center rounded-full border text-[10px] font-black ${reached ? "border-[#8fa7b8] bg-[#8fa7b8] text-[#10161a]" : "border-white/20 text-white/30"}`}>{reached ? "✓" : ""}</span>
                       <p className={`mt-2 text-[9px] font-bold leading-3 sm:text-[11px] ${reached ? "text-white/80" : "text-white/28"}`}>{milestone.label}</p>
                     </div>
                   );
@@ -145,7 +145,7 @@ export default function TrackingPage() {
 
             <div className="border-t border-white/10 bg-white/[0.04] p-6 sm:p-9 lg:border-l lg:border-t-0">
               <p className="text-xs font-black uppercase tracking-[0.18em] text-white/40">Estimated delivery</p>
-              <p className="mt-3 text-3xl font-black text-[#f2a01e]">{job.eta || "Being confirmed"}</p>
+              <p className="mt-3 text-3xl font-black text-[#9fb5c5]">{job.eta || "Being confirmed"}</p>
               <p className="mt-5 text-sm leading-6 text-white/45">Arrival times may change with traffic, weather, loading, and road conditions.</p>
             </div>
           </div>
@@ -155,11 +155,11 @@ export default function TrackingPage() {
           <section className="rounded-[2rem] border border-black/8 bg-white p-6 shadow-[0_14px_45px_rgba(0,0,0,0.06)] sm:p-8">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-black">Route details</h2>
-              <span className="rounded-full bg-[#f2a01e]/15 px-3 py-1 text-xs font-black text-[#9b5d00]">Tri-State transport</span>
+              <span className="rounded-full bg-[#8fa7b8]/20 px-3 py-1 text-xs font-black text-[#4d6677]">Tri-State transport</span>
             </div>
             <div className="mt-7 grid grid-cols-[24px_1fr] gap-x-4">
               <div className="flex flex-col items-center">
-                <span className="mt-1 h-4 w-4 rounded-full border-4 border-[#f2a01e] bg-white" />
+                <span className="mt-1 h-4 w-4 rounded-full border-4 border-[#8fa7b8] bg-white" />
                 <span className="my-1 min-h-16 w-px flex-1 bg-black/12" />
                 <span className="mb-1 h-4 w-4 rounded-full bg-black" />
               </div>
@@ -173,16 +173,16 @@ export default function TrackingPage() {
           <section className="rounded-[2rem] border border-black/8 bg-white p-6 shadow-[0_14px_45px_rgba(0,0,0,0.06)] sm:p-8">
             <h2 className="text-xl font-black">Current update</h2>
             {job.trackingPaused ? (
-              <div className="mt-5 rounded-2xl bg-[#f3f1ec] p-5">
+              <div className="mt-5 rounded-2xl bg-[#eef1f3] p-5">
                 <p className="font-black">Location updates are paused</p>
                 <p className="mt-2 text-sm leading-6 text-black/55">Your transport is still active. Updates will resume shortly; the current ETA remains {job.eta || "under review"}.</p>
               </div>
             ) : (
-              <div className="mt-5 rounded-2xl bg-[#f3f1ec] p-5">
+              <div className="mt-5 rounded-2xl bg-[#eef1f3] p-5">
                 <p className="text-[11px] font-black uppercase tracking-[0.16em] text-black/40">Approximate location</p>
                 <p className="mt-2 text-lg font-black">{job.currentLocation || "Waiting for the next driver update"}</p>
                 {hasCoordinates && (
-                  <a className="mt-4 inline-flex rounded-lg bg-white px-3 py-2 text-xs font-black shadow-sm hover:text-[#9b5d00]" href={`https://www.google.com/maps?q=${job.latitude},${job.longitude}`} target="_blank" rel="noreferrer">View approximate map ↗</a>
+                  <a className="mt-4 inline-flex rounded-lg bg-white px-3 py-2 text-xs font-black shadow-sm hover:text-[#4d6677]" href={`https://www.google.com/maps?q=${job.latitude},${job.longitude}`} target="_blank" rel="noreferrer">View approximate map ↗</a>
                 )}
               </div>
             )}
@@ -192,7 +192,7 @@ export default function TrackingPage() {
 
         <section className="mt-6 flex flex-col gap-5 rounded-[2rem] border border-black/8 bg-white p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
           <div><h2 className="text-xl font-black">Questions about this transport?</h2><p className="mt-1 text-sm text-black/50">S&P Transports is available 24/7 across the Tri-State area.</p></div>
-          <a href="tel:+19292642629" className="shrink-0 rounded-xl bg-[#f2a01e] px-6 py-3.5 text-center font-black text-black hover:bg-[#ffb536]">Call (929) 264-2629</a>
+          <a href="tel:+19292642629" className="shrink-0 rounded-xl bg-[#8fa7b8] px-6 py-3.5 text-center font-black text-[#10161a] hover:bg-[#a9bdca]">Call (929) 264-2629</a>
         </section>
       </div>
     </TrackerShell>

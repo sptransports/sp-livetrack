@@ -144,7 +144,7 @@ function AdminPageContent() {
             </div>
             <a
               href="/admin/new"
-              className="shrink-0 rounded-2xl bg-[#f2a01e] px-5 py-3 text-center font-bold text-black"
+              className="shrink-0 rounded-2xl bg-[#8fa7b8] px-5 py-3 text-center font-bold text-[#10161a] hover:bg-[#a9bdca]"
             >
               + Create New Job
             </a>
